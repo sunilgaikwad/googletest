@@ -17,7 +17,8 @@
 GTEST_DIR = ..
 
 # Where to find user code.
-USER_DIR = ../samples
+#USER_DIR = ../samples
+USER_DIR = ../../../coderunnerRep
 
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
@@ -29,7 +30,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = sample1_unittest
+TESTS = unittests
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -71,12 +72,31 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-sample1.o : $(USER_DIR)/sample1.cc $(USER_DIR)/sample1.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/sample1.cc
+#Binary search
+binarysearch_sortedarray.o : $(USER_DIR)/searching_techniques/binarysearch_sortedarray.cpp $(USER_DIR)/searching_techniques/binarysearch_sortedarray.h $(GTEST_HEADERS)
+														 $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/searching_techniques/binarysearch_sortedarray.cpp
 
-sample1_unittest.o : $(USER_DIR)/sample1_unittest.cc \
-                     $(USER_DIR)/sample1.h $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/sample1_unittest.cc
+searching_techniques_unittest.o : $(USER_DIR)/searching_techniques/searching_techniques_unittest.cpp \
+                     							$(USER_DIR)/searching_techniques/binarysearch_sortedarray.h $(GTEST_HEADERS)
+																	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/searching_techniques/searching_techniques_unittest.cpp
 
-sample1_unittest : sample1.o sample1_unittest.o gtest_main.a
+#sample test
+sample1.o : $(USER_DIR)/unittesting/sample1.cc $(USER_DIR)/unittesting/sample1.h $(GTEST_HEADERS)
+						$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/unittesting/sample1.cc
+sample10.o : $(USER_DIR)/unittesting/sample10.cc $(USER_DIR)/unittesting/sample10.h $(GTEST_HEADERS)
+						 $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/unittesting/sample10.cc
+
+sample_unittest.o : $(USER_DIR)/unittesting/sample_unittest.cc \
+	                	$(USER_DIR)/unittesting/sample1.h $(GTEST_HEADERS) \
+										$(USER_DIR)/unittesting/sample10.h $(GTEST_HEADERS)
+										$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/unittesting/sample_unittest.cc
+
+
+#Final target
+unittests : binarysearch_sortedarray.o \
+						searching_techniques_unittest.o \
+ 						sample1.o \
+						sample10.o \
+						sample_unittest.o \
+						gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
